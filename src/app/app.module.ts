@@ -7,17 +7,39 @@ import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 
-import { MaterialModule } from './material.module';
+import { MaterialModule } from '../material.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+
 import 'hammerjs';
+import { LandingComponent } from './landing/landing.component';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { MusicContainerComponent } from './music-container/music-container.component';
 
 export const appRoutes: Routes = [
-  
+  {
+    path: '',
+    component: LandingComponent,
+    children: [
+      { path: '',
+        component: SignInComponent,
+      },
+      { path: 'sign_up',
+        component: SignUpComponent,
+      },
+    ]
+  }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ToolbarComponent,
+    LandingComponent,
+    SignInComponent,
+    SignUpComponent,
+    MusicContainerComponent
   ],
   imports: [
     BrowserModule,
