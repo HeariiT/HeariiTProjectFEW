@@ -16,6 +16,7 @@ import { LandingComponent } from './landing/landing.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { MusicContainerComponent } from './music-container/music-container.component';
+import { HomeComponent } from './home/home.component';
 
 export const appRoutes: Routes = [
   {
@@ -29,6 +30,10 @@ export const appRoutes: Routes = [
         component: SignUpComponent,
       },
     ]
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   }
 ];
 
@@ -39,7 +44,8 @@ export const appRoutes: Routes = [
     LandingComponent,
     SignInComponent,
     SignUpComponent,
-    MusicContainerComponent
+    MusicContainerComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

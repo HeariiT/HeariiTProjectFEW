@@ -1,3 +1,38 @@
-<p>
-  music-container works!
-</p>
+<div class="music-container">
+  <h2 class="white-font with-cool-font">MUSIC</h2>
+
+  <hr>
+
+  <div class="row">
+    <span class="with-roboto yellow-font col-md-4">{{user}}</span>
+    <span class="col-md-4"></span>
+
+    <div class="cold-md-4 white-font">
+      Category
+      <input class="cat-input">
+      <button class="add-cat-btn">+</button>
+    </div>
+  </div>
+
+  <hr style="margin-bottom: 20px;">
+
+  <div class="" *ngFor="let song of musicSources; let i = index">
+    <div class="song-container">
+      <div class="row">
+        <img src="./assets/logo.png" class="col-md-1" width="100">
+        <div class="col-md-7 white-font with-roboto machetico">{{song.title}} - {{song.author}}</div>
+        <div class="col-md-4 machetico to-right">
+          <img *ngIf="currentIndex==i&&!myAudio.paused&&!myAudio.ended" src="./assets/bars.gif" width="20" style="margin-right: 5px;">
+          <mat-icon class="icon white-font" (click)="playMusic(i)">
+              <span>play_arrow</span>
+          </mat-icon>
+          <mat-icon class="icon white-font">add_circle_outline</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <audio #myAudio hidden></audio>
+</div>
