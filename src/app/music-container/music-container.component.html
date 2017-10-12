@@ -1,0 +1,74 @@
+<div class="music-container">
+  <h2 class="white-font with-cool-font">MUSIC</h2>
+
+  <hr>
+
+  <div class="row">
+    <span class="with-roboto yellow-font col-md-4">{{user}}</span>
+    <span class="col-md-4"></span>
+
+    <div class="cold-md-4 white-font">
+      Category
+      <input class="cat-input">
+      <button class="add-cat-btn">+</button>
+    </div>
+  </div>
+
+  <hr style="margin-bottom: 20px;">
+
+  <div class="" *ngFor="let song of musicSources; let i = index">
+    <div class="song-container">
+      <div class="row">
+        <div class="col-md-1">
+          <img src="./assets/logo.png" width="30">
+        </div>
+        <div class="col-md-7 white-font with-roboto machetico" style="padding-left:0px">{{song.title}} - {{song.author}}</div>
+        <div class="col-md-4 machetico to-right">
+          <img *ngIf="currentIndex==i&&!myAudio.paused&&!audioEnded()" src="./assets/bars.gif" width="20" style="margin-right: 5px;">
+          <mat-icon class="icon white-font" (click)="playMusic(i)">
+              <span>play_arrow</span>
+          </mat-icon>
+          <mat-icon class="icon white-font">add_circle_outline</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio #myAudio hidden></audio>
+</div>
+
+<div class="music-player">
+  <div class="row">
+    <div class="col-md-2 center-block cover-container">
+      <img src="./assets/logo.ico" width="140">
+    </div>
+    <div class="col-md-2 info-container">
+      <div class="">
+        Título
+      </div>
+      <div class="">
+        Autor
+      </div>
+      <div class="">
+        Album
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="text-center music-progress">
+        <mat-slider #musicSlider style="width:500px" step="1" min="0" [max]="max()" [value]="value()"></mat-slider>
+        {{time}}
+      </div>
+      <div class="text-center">
+        <button mat-button mat-fab mat-mini-fab>
+          <mat-icon>fast_rewind</mat-icon>
+        </button>
+        <button mat-button mat-fab>
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button mat-button mat-fab mat-mini-fab>
+          <mat-icon>fast_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
