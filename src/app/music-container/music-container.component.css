@@ -1,5 +1,5 @@
 .music-container {
-  height: 92vh;
+  height: 70vh;
   width: 100%;
   background-color: #1A1A1A;
   opacity: 0.92;
@@ -63,7 +63,7 @@ h2 {
 }
 
 .machetico {
-  line-height: 25px;
+  line-height: 28px;
 }
 
 .icon {
@@ -75,4 +75,23 @@ h2 {
 
 .to-right {
   text-align: right;
+}
+
+.music-player {
+  background-color: #0D0D0D;
+  width: 100%;
+  height: 21vh;
+  opacity: 0.92;
+}
+
+.cover-container {
+
+}
+
+.music-progress {
+  margin-top: 20px;
+}
+
+.info-container {
+  padding: 15px;
 }
