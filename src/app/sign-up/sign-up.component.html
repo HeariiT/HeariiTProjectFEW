@@ -1,27 +1,29 @@
 <h3 class="text-center yellow-font with-cool-font" style="margin-bottom: 60px;">JOIN US :)</h3>
-<div class="form-margin">
-  <div class="input-container">
-    <label class="with-cool-font white-font">USERNAME</label><br>
-    <input class="white-font form-input">
-  </div>
+<form name="signUpForm" [formGroup]="signUpForm" (ngSubmit)="onSubmit()" >
+  <div class="form-margin">
+    <div class="input-container">
+      <label class="with-cool-font white-font">USERNAME</label><br>
+      <input class="white-font form-input" formControlName="username" required>
+    </div>
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">EMAIL</label><br>
-    <input class="white-font form-input">
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">EMAIL</label><br>
+      <input class="white-font form-input"  type="email" formControlName="email" required>
+    </div>
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">PASSWORD</label><br>
-    <input class="white-font form-input" type="password"><br>
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">PASSWORD</label><br>
+      <input class="white-font form-input" type="password" formControlName="password" required ><br>
+    </div>
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">CONFIRM PASSWORD</label><br>
-    <input class="white-font form-input" type="password"><br>
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">CONFIRM PASSWORD</label><br>
+      <input class="white-font form-input" type="password" required ><br>
+    </div>
 
-  <button mat-button class="with-cool-font regis-button" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
-    SIGN UP
-  </button>
-  <div class="white-font with-cool-font link text-center" routerLink="">ALREADY HAVE AN ACCOUNT?</div>
-</div>
+    <button mat-button class="with-cool-font regis-button" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
+      SIGN UP
+    </button>
+    <div class="white-font with-cool-font link text-center" type="submit"  routerLink="">ALREADY HAVE AN ACCOUNT?</div>
+  </div>
+</form>
