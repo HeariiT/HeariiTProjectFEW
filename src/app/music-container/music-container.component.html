@@ -15,20 +15,21 @@
   </div>
 
   <hr style="margin-bottom: 20px;">
-
-  <div class="" *ngFor="let song of musicSources; let i = index">
-    <div class="song-container">
-      <div class="row">
-        <div class="col-md-1">
-          <img src="./assets/logo.png" width="30">
-        </div>
-        <div class="col-md-7 white-font with-roboto machetico" style="padding-left:0px">{{song.title}} - {{song.author}}</div>
-        <div class="col-md-4 machetico to-right">
-          <img *ngIf="currentIndex==i&&!myAudio.paused&&!audioEnded()" src="./assets/bars.gif" width="20" style="margin-right: 5px;">
-          <mat-icon class="icon white-font" (click)="playMusic(i)">
-              <span>play_arrow</span>
-          </mat-icon>
-          <mat-icon class="icon white-font">add_circle_outline</mat-icon>
+  <div class="songs-container">
+    <div class="" *ngFor="let song of musicSources; let i = index">
+      <div class="song-container">
+        <div class="row">
+          <div class="col-md-1">
+            <img src="./assets/logo.png" width="30">
+          </div>
+          <div class="col-md-7 white-font with-roboto machetico name" style="padding-left:0px" (click)="playMusic(i)">
+            {{song.title}} - {{song.author}}
+          </div>
+          <div class="col-md-4 machetico to-right">
+            <img *ngIf="currentIndex==i&&!myAudio.paused&&!audioEnded()"
+              src="./assets/bars.gif" width="20" style="margin-right: 5px;">
+            <mat-icon class="icon white-font">add_circle_outline</mat-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -40,34 +41,59 @@
 <div class="music-player">
   <div class="row">
     <div class="col-md-2 center-block cover-container">
-      <img src="./assets/logo.ico" width="140">
+      <img src="./assets/logo.ico" width="130">
     </div>
-    <div class="col-md-2 info-container">
+    <div class="col-md-3 info-container white-font">
       <div class="">
-        Título
+        <div class="with-cool-font info-tag">TITLE</div>
+        <span class="info-size" [@fadeInOut]>
+          {{musicSources[currentIndex].title}}
+        </span>
       </div>
       <div class="">
-        Autor
+        <div class="with-cool-font info-tag">AUTHOR</div>
+        <span class="info-size">
+          {{musicSources[currentIndex].author}}
+        </span>
       </div>
       <div class="">
-        Album
+        <div class="with-cool-font info-tag">ALBUM</div>
+        <span class="info-size">
+          {{musicSources[currentIndex].album}}
+        </span>
       </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-7 player-buttons">
       <div class="text-center music-progress">
-        <mat-slider #musicSlider style="width:500px" step="1" min="0" [max]="max()" [value]="value()"></mat-slider>
-        {{time}}
+        <mat-slider #musicSlider style="width:80%" step="1" min="0" [max]="max()"
+          [value]="value()" (click)="setCurrentTime(musicSlider.value)">
+        </mat-slider>
+        <span class="white-font">{{time}}</span>
       </div>
       <div class="text-center">
-        <button mat-button mat-fab mat-mini-fab>
-          <mat-icon>fast_rewind</mat-icon>
+        <button mat-button mat-fab mat-mini-fab (click)="nextSong()">
+          <mat-icon>skip_previous</mat-icon>
         </button>
-        <button mat-button mat-fab>
-          <mat-icon>play_arrow</mat-icon>
+        <button mat-button mat-fab (click)="toggleAudio()">
+          <mat-icon *ngIf="myAudio.paused">play_arrow</mat-icon>
+          <mat-icon *ngIf="!myAudio.paused">pause</mat-icon>
         </button>
-        <button mat-button mat-fab mat-mini-fab>
-          <mat-icon>fast_forward</mat-icon>
+        <button mat-button mat-fab mat-mini-fab (click)="stopSong()">
+          <mat-icon>stop</mat-icon>
         </button>
+        <button mat-button mat-fab mat-mini-fab mat-raised-button	(click)="prevSong()" style="margin-right: 10%;">
+          <mat-icon>skip_next</mat-icon>
+        </button>
+        <mat-icon *ngIf="myAudio.volume>0.4&&!myAudio.muted" class="volume-icon" (click)="mute()">
+          volume_up
+        </mat-icon>
+        <mat-icon *ngIf="myAudio.volume<=0.4&&myAudio.volume>0&&!myAudio.muted" class="volume-icon" (click)="mute()">
+          volume_down
+        </mat-icon>
+        <mat-icon *ngIf="myAudio.volume==0||myAudio.muted" class="volume-icon" (click)="mute()">
+          volume_off
+        </mat-icon>
+        <mat-slider #volume style="width:10px" min="0" max="100" step="1" value="100" (click)="setVolume(volume.value)"></mat-slider>
       </div>
     </div>
   </div>
