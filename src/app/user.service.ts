@@ -30,5 +30,31 @@ export class UserService {
           .map( ( res: Response ) => res );
   }
 
+  getUser( formData ) {
+
+      var user = {
+          "username": formData.username,
+      }
+
+    const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.post( this.backPath + '/username', JSON.stringify( user ), options )
+          .map( ( res: Response ) => res );
+  }
+
+  getEmail( formData ) {
+
+      var email = {
+          "email": formData.email,
+      }
+
+    const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.post( this.backPath + '/email', JSON.stringify( email ), options )
+          .map( ( res: Response ) => res );
+  }
+
 
 }
