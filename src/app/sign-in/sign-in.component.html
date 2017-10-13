@@ -1,18 +1,42 @@
 <h3 class="text-center yellow-font with-cool-font" style="margin-bottom: 80px;">HEY THERE! WELCOME BACK!</h3>
-<div class="form-margin">
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">EMAIL</label><br>
-    <input class="white-font form-input">
+<form name="signInForm" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+  <div class="form-margin">
+    <div class="input-container">
+      <label class="with-cool-font white-font">EMAIL</label><br>
+      <input class="white-font form-input" type="email" formControlName="email"
+      (ngModelChange)="emailInputChanged();" required >
+      <div *ngIf="signInForm.controls['email'].hasError('required') && checkForEmailEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;">
+        Email is required
+      </div>
+      <div *ngIf="signInForm.controls['email'].hasError('pattern') && checkForEmailEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Invalid Email
+      </div>
+      <div *ngIf="((falseCredentials))"
+       class="alert alert-danger" style="width: 80%;">
+        Wrong Email or Password
+      </div>
+    </div>
+
+    <div class="input-container">
+      <label class="with-cool-font white-font">PASSWORD</label><br>
+      <input class="white-font form-input" type="password" formControlName="password"
+      (ngModelChange)="passwordInputChanged()"  required><br>
+      <div *ngIf="signInForm.controls['password'].hasError('required') && checkForPasswordEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;">
+        Password is required
+      </div>
+      <div *ngIf="signInForm.controls['password'].hasError('minlength') && checkForPasswordEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Password must have at least 8 characters
+      </div>
+    </div>
+
+    <button mat-button class="with-cool-font regis-button"  type="submit" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
+      SIGN IN
+    </button>
+    <div class="white-font with-cool-font link text-center" routerLink="sign_up">JOIN US</div>
   </div>
-
-  <div class="input-container">
-    <label class="with-cool-font white-font">PASSWORD</label><br>
-    <input class="white-font form-input" type="password"><br>
-  </div>
-
-  <button mat-button class="with-cool-font regis-button" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
-    SIGN IN
-  </button>
-  <div class="white-font with-cool-font link text-center" routerLink="sign_up">JOIN US</div>
-</div>
+</form>

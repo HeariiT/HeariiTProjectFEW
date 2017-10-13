@@ -30,6 +30,20 @@ export class UserService {
           .map( ( res: Response ) => res );
   }
 
+  signIn (formData){
+    var user = {
+        "email": formData.email,
+        "password": formData.password
+    }
+
+    const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.post( this.backPath + '/sign_in', JSON.stringify( user ), options )
+          .map( ( res: Response ) => res );
+
+  }
+
   getUser( formData ) {
 
       var user = {
