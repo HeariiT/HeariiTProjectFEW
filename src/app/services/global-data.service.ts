@@ -53,6 +53,7 @@ export class GlobalDataService {
     }
     this.headers.next( hds )
     localStorage.removeItem( 'accessToken' )
+    localStorage.removeItem( 'userData' )
   }
 
 }

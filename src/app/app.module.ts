@@ -21,6 +21,7 @@ import { HomeComponent } from './home/home.component';
 
 import { GlobalDataService } from './services/global-data.service';
 import { SessionService } from './services/session.service';
+import { UserService } from './services/user.service';
 
 import { AlreadyInGuard } from './guards/already-in.guard';
 import { NoSessionGuard } from './guards/no-session.guard';
@@ -65,7 +66,7 @@ export const appRoutes: Routes = [
     NoopAnimationsModule,
     RouterModule.forRoot( appRoutes )
   ],
-  providers: [ GlobalDataService, SessionService, AlreadyInGuard, NoSessionGuard ],
+  providers: [ GlobalDataService, SessionService, UserService, AlreadyInGuard, NoSessionGuard ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

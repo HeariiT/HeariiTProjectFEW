@@ -8,8 +8,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css'],
-  providers: [ UserService ]
+  styleUrls: ['./sign-in.component.css']
 })
 export class SignInComponent implements OnInit {
 
@@ -41,7 +40,12 @@ export class SignInComponent implements OnInit {
       res => {
         if ( res.status == 200 ) {
           this.gbService.updateAccessToken( res.headers.get( 'x-access-token' ) )
-          this.router.navigate( [ 'home' ] )
+          this.uService.getEmail( this.signInForm.value ).subscribe(
+            ans => {
+              localStorage.setItem( 'userData', JSON.stringify( ans ) )
+              this.router.navigate( [ 'home' ] )
+            }
+          )
         }
       },
       err => {
