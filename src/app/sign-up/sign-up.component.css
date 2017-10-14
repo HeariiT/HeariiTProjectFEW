@@ -1,0 +1,7 @@
+input.ng-invalid:focus {
+  border-right: 5px solid red;
+}
+
+input.ng-valid:focus {
+  border-right: 5px solid green;
+}

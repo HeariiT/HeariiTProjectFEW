@@ -1,27 +1,70 @@
 <h3 class="text-center yellow-font with-cool-font" style="margin-bottom: 60px;">JOIN US :)</h3>
-<div class="form-margin">
-  <div class="input-container">
-    <label class="with-cool-font white-font">USERNAME</label><br>
-    <input class="white-font form-input">
-  </div>
+<form name="signUpForm" [formGroup]="signUpForm" (ngSubmit)="onSubmit()" >
+  <div class="form-margin">
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">EMAIL</label><br>
-    <input class="white-font form-input">
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">USERNAME</label><br>
+      <input class="white-font form-input" formControlName="username"
+      (ngModelChange)="userInputChanged(); checkExistingUsername();" required>
+      <div *ngIf="signUpForm.controls['username'].hasError('required') && checkForUserEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;" [@fadeInOut]>
+        Username is required
+      </div>
+      <div *ngIf="signUpForm.controls['username'].hasError('pattern') && checkForUserEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;" [@fadeInOut]>
+        Invalid Username
+      </div>
+      <div *ngIf=" verifyUser() && checkForUserEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Username in use
+      </div>
+    </div>
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">PASSWORD</label><br>
-    <input class="white-font form-input" type="password"><br>
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">EMAIL</label><br>
+      <input  class="white-font form-input "  type="email" formControlName="email"
+      (ngModelChange)="emailInputChanged(); checkExistingEmail();" required>
+      <div *ngIf="signUpForm.controls['email'].hasError('required') && checkForEmailEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;">
+        Email is required
+      </div>
+      <div *ngIf="signUpForm.controls['email'].hasError('pattern') && checkForEmailEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Invalid Email
+      </div>
+      <div *ngIf="verifyEmail() && checkForEmailEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Email in use
+      </div>
+    </div>
 
-  <div class="input-container">
-    <label class="with-cool-font white-font">CONFIRM PASSWORD</label><br>
-    <input class="white-font form-input" type="password"><br>
-  </div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">PASSWORD</label><br>
+      <input class="white-font form-input" type="password" formControlName="password"
+      (ngModelChange)="passwordInputChanged()" #pass required ><br>
+      <div *ngIf="signUpForm.controls['password'].hasError('required') && checkForPasswordEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;">
+        Password is required
+      </div>
+      <div *ngIf="signUpForm.controls['password'].hasError('minlength') && checkForPasswordEmptyResponse()"
+       class="alert alert-danger" style="width: 80%;">
+        Password must have at least 8 characters
+      </div>
+    </div>
 
-  <button mat-button class="with-cool-font regis-button" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
-    SIGN UP
-  </button>
-  <div class="white-font with-cool-font link text-center" routerLink="">ALREADY HAVE AN ACCOUNT?</div>
-</div>
+    <div class="input-container">
+      <label class="with-cool-font white-font">CONFIRM PASSWORD</label><br>
+      <input class="white-font form-input" type="password" [ngModelOptions]="{standalone: true}"
+      [(ngModel)]="rePassword" (ngModelChange)="rePasswordInputChanged()" required ><br>
+      <div *ngIf=" checkRePassword() && checkForPasswordEmptyResponse()"
+        class="alert alert-danger" style="width: 80%;">
+        Sould be equal to Password
+      </div>
+    </div>
+
+    <button mat-button class="with-cool-font regis-button" type="submit" style="margin-left: 18%; color: white; margin-top: 20px; margin-bottom: 15px;">
+      SIGN UP
+    </button>
+    <div class="white-font with-cool-font link text-center"  routerLink="">ALREADY HAVE AN ACCOUNT?</div>
+  </div>
+</form>
