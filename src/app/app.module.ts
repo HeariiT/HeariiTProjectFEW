@@ -23,6 +23,7 @@ import { UploadComponent } from './upload/upload.component';
 import { GlobalDataService } from './services/global-data.service';
 import { SessionService } from './services/session.service';
 import { UserService } from './services/user.service';
+import { SongManagementService } from './services/song-management.service';
 
 import { AlreadyInGuard } from './guards/already-in.guard';
 import { NoSessionGuard } from './guards/no-session.guard';
@@ -68,10 +69,10 @@ export const appRoutes: Routes = [
     NoopAnimationsModule,
     RouterModule.forRoot( appRoutes )
   ],
-  providers: [ GlobalDataService, SessionService, UserService, AlreadyInGuard, NoSessionGuard ],
   entryComponents: [
     UploadComponent
   ],
+  providers: [ GlobalDataService, SessionService, UserService, SongManagementService, AlreadyInGuard, NoSessionGuard ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

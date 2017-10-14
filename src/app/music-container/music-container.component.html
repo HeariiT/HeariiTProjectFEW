@@ -17,7 +17,7 @@
   <hr style="margin-bottom: 20px;">
   <div class="songs-container">
     <div class="" *ngFor="let song of musicSources; let i = index">
-      <div class="song-container">
+      <div class="song-container" [class.current-song]="currentIndex==i">
         <div class="row">
           <div class="col-md-1">
             <img src="./assets/logo.png" width="30">
@@ -26,8 +26,10 @@
             {{song.title}} - {{song.author}}
           </div>
           <div class="col-md-4 machetico to-right">
-            <img *ngIf="currentIndex==i&&!myAudio.paused&&!audioEnded()"
+            <img *ngIf="currentIndex==i&&!myAudio.paused&&!audioEnded()&&!songRequested"
               src="./assets/bars.gif" width="20" style="margin-right: 5px;">
+            <img *ngIf="currentIndex==i&&songRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
+            <mat-icon class="icon white-font" (click)="playMusic(i)">file_download</mat-icon>
             <mat-icon class="icon white-font">add_circle_outline</mat-icon>
           </div>
         </div>
@@ -46,19 +48,19 @@
     <div class="col-md-3 info-container white-font">
       <div class="">
         <div class="with-cool-font info-tag">TITLE</div>
-        <span class="info-size" [@fadeInOut]>
+        <span *ngIf="currentIndex!=-1" class="info-size" [@fadeInOut]>
           {{musicSources[currentIndex].title}}
         </span>
       </div>
       <div class="">
         <div class="with-cool-font info-tag">AUTHOR</div>
-        <span class="info-size">
+        <span *ngIf="currentIndex!=-1" class="info-size">
           {{musicSources[currentIndex].author}}
         </span>
       </div>
       <div class="">
         <div class="with-cool-font info-tag">ALBUM</div>
-        <span class="info-size">
+        <span *ngIf="currentIndex!=-1" class="info-size">
           {{musicSources[currentIndex].album}}
         </span>
       </div>
@@ -71,7 +73,7 @@
         <span class="white-font">{{time}}</span>
       </div>
       <div class="text-center">
-        <button mat-button mat-fab mat-mini-fab (click)="nextSong()">
+        <button mat-button mat-fab mat-mini-fab (click)="prevSong()">
           <mat-icon>skip_previous</mat-icon>
         </button>
         <button mat-button mat-fab (click)="toggleAudio()">
@@ -81,7 +83,7 @@
         <button mat-button mat-fab mat-mini-fab (click)="stopSong()">
           <mat-icon>stop</mat-icon>
         </button>
-        <button mat-button mat-fab mat-mini-fab mat-raised-button	(click)="prevSong()" style="margin-right: 10%;">
+        <button mat-button mat-fab mat-mini-fab mat-raised-button	(click)="nextSong()" style="margin-right: 10%;">
           <mat-icon>skip_next</mat-icon>
         </button>
         <mat-icon *ngIf="myAudio.volume>0.4&&!myAudio.muted" class="volume-icon" (click)="mute()">

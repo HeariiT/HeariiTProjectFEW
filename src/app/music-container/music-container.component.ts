@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
+import { SongManagementService } from '../services/song-management.service';
 
 @Component({
   selector: 'app-music-container',
@@ -27,54 +28,94 @@ export class MusicContainerComponent implements OnInit {
   paused = true;
   currentIndex = -1;
   time="0:00";
+  diameter = 10;
 
-  musicSources = [
-    {
-      title: "Summer' 78",
-      author: 'Yann Tiersen (DG Cover)',
-      album: 'N/A',
-      src: './assets/summer.mp3'
-    },
-    {
-      title: "Arrivals N.2",
-      author: "Dustin O'Halloran (DG Cover)",
-      album: 'N/A',
-      src: './assets/arrivals.mp3'
-    }
-  ]
+  musicSources = []
+  songRequested = false;
+
+  cache = []
 
   userData;
-  constructor( ) {
+  constructor( private songService: SongManagementService ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
 
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
+
+    songService.getAllSongs( ).subscribe(
+      res => {
+        for ( var i = 0; i < res.json( ).length; i++ ) {
+          this.musicSources.push({
+            title: res.json( )[ i ].title,
+            author: res.json( )[ i ].author,
+            album: res.json( )[ i ].album,
+            id: res.json( )[ i ].id
+          })
+        }
+        if ( this.musicSources.length > 0 ) {
+          this.songRequested = true
+          let audio = this.myAudio.nativeElement;
+          var song_id = this.musicSources[ 0 ].id;
+          this.currentIndex = 0;
+          this.songService.downloadSong( song_id ).subscribe(
+            res => {
+              var blob = res.blob( )
+              audio.src = URL.createObjectURL( blob )
+              this.addSongToCache({
+                song_id: song_id,
+                blob: blob
+              })
+
+              this.songRequested = false
+            }
+          )
+        }
+      }
+    )
   }
 
   ngOnInit( ) {
-    let audio = this.myAudio.nativeElement;
-    audio.src = this.musicSources[ 0 ].src;
-    this.currentIndex = 0;
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
-    //for ( var i = 0; i < 20; i++ ) {
-    //  this.musicSources.push( this.musicSources[ 0 ] )
-    //}
   }
 
   playMusic( index ) {
-    let audio = this.myAudio.nativeElement;
+    if ( !this.songRequested && this.currentIndex != index ) {
+      this.songRequested = true
+      let audio = this.myAudio.nativeElement;
+      audio.pause( )
 
-    if ( this.currentIndex != index ) {
-      audio.src = this.musicSources[ index ].src;
+      var song_id = this.musicSources[ index ].id;
       this.currentIndex = index;
-    }
 
-    if ( audio.paused ) {
-      audio.play( )
-      this.paused = false
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( audio.paused ) {
+          audio.play( )
+          this.paused = false
+        }
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+
+            this.songRequested = false
+
+            if ( audio.paused ) {
+              audio.play( )
+              this.paused = false
+            }
+          }
+        )
     }
   }
 
@@ -131,22 +172,80 @@ export class MusicContainerComponent implements OnInit {
   }
 
   nextSong( ) {
-    let audio = this.myAudio.nativeElement;
-    this.currentIndex = ( this.currentIndex + 1 ) % this.musicSources.length;
-    audio.src = this.musicSources[ this.currentIndex ].src;
-    if ( !this.paused )
-      audio.play( )
+
+    if ( !this.songRequested ) {
+      this.songRequested = true
+      this.currentIndex = ( this.currentIndex + 1 ) % this.musicSources.length;
+
+      var song_id = this.musicSources[ this.currentIndex ].id;
+
+      let audio = this.myAudio.nativeElement;
+      audio.pause( )
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( !this.paused ) {
+          audio.play( )
+          this.paused = false
+        }
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            if ( !this.paused ) {
+              audio.play( )
+              this.paused = false
+            }
+            this.songRequested = false
+          }
+        )
+    }
   }
 
   prevSong( ) {
-    let audio = this.myAudio.nativeElement;
-    if ( this.currentIndex > 0 )
-      this.currentIndex = ( this.currentIndex - 1 )
-    else
-      this.currentIndex = ( this.musicSources.length - 1 )
-    audio.src = this.musicSources[ this.currentIndex ].src;
-    if ( !this.paused )
-      audio.play( )
+    if ( !this.songRequested ) {
+      this.songRequested = true
+      if ( this.currentIndex > 0 )
+        this.currentIndex = ( this.currentIndex - 1 )
+      else
+        this.currentIndex = ( this.musicSources.length - 1 )
+        var song_id = this.musicSources[ this.currentIndex ].id;
+
+      let audio = this.myAudio.nativeElement;
+      audio.pause( )
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( !this.paused ) {
+          audio.play( )
+          this.paused = false
+        }
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            if ( !this.paused ) {
+              audio.play( )
+              this.paused = false
+            }
+            this.songRequested = false
+          }
+        )
+    }
   }
 
   setVolume( v ) {
@@ -164,6 +263,19 @@ export class MusicContainerComponent implements OnInit {
   mute( ) {
     let audio = this.myAudio.nativeElement;
     audio.muted = !audio.muted
+  }
+
+  isOnCache( song_id ) {
+    for ( var i = 0; i < this.cache.length; i++ )
+      if ( this.cache[ i ].song_id == song_id )
+        return i
+    return -1
+  }
+
+  addSongToCache( obj ) {
+    this.cache.push( obj )
+    if ( this.cache.length > 5 )
+      this.cache = this.cache.slice( 1, this.cache.length )
   }
 
 }
