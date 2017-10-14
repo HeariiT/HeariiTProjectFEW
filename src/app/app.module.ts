@@ -24,9 +24,11 @@ import { GlobalDataService } from './services/global-data.service';
 import { SessionService } from './services/session.service';
 import { UserService } from './services/user.service';
 import { SongManagementService } from './services/song-management.service';
+import { CategoryService } from './services/category.service';
 
 import { AlreadyInGuard } from './guards/already-in.guard';
 import { NoSessionGuard } from './guards/no-session.guard';
+import { NewCategoryComponent } from './new-category/new-category.component';
 
 export const appRoutes: Routes = [
   {
@@ -58,7 +60,8 @@ export const appRoutes: Routes = [
     SignUpComponent,
     MusicContainerComponent,
     HomeComponent,
-    UploadComponent
+    UploadComponent,
+    NewCategoryComponent
   ],
   imports: [
     BrowserModule,
@@ -70,9 +73,18 @@ export const appRoutes: Routes = [
     RouterModule.forRoot( appRoutes )
   ],
   entryComponents: [
-    UploadComponent
+    UploadComponent,
+    NewCategoryComponent
   ],
-  providers: [ GlobalDataService, SessionService, UserService, SongManagementService, AlreadyInGuard, NoSessionGuard ],
+  providers: [
+    GlobalDataService,
+    AlreadyInGuard,
+    NoSessionGuard,
+    SessionService,
+    UserService,
+    SongManagementService,
+    CategoryService
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

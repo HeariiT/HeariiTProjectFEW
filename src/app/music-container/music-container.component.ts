@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { NewCategoryComponent } from '../new-category/new-category.component';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
 import { SongManagementService } from '../services/song-management.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import * as FileSaver from 'file-saver';
 
 @Component({
@@ -39,7 +41,7 @@ export class MusicContainerComponent implements OnInit {
   cache = []
 
   userData;
-  constructor( private songService: SongManagementService ) {
+  constructor( private songService: SongManagementService, public dialog: MatDialog ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
@@ -316,6 +318,13 @@ export class MusicContainerComponent implements OnInit {
     this.cache.push( obj )
     if ( this.cache.length > 5 )
       this.cache = this.cache.slice( 1, this.cache.length )
+  }
+
+  openNewCategory() {
+    let dialogRef = this.dialog.open( NewCategoryComponent, {
+        height: '210px',
+        width: '300px'
+    });
   }
 
 }

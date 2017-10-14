@@ -1,0 +1,13 @@
+.form-input {
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  background-color: #676566;
+  width: 80%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
