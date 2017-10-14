@@ -18,6 +18,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { MusicContainerComponent } from './music-container/music-container.component';
 import { HomeComponent } from './home/home.component';
+import { UploadComponent } from './upload/upload.component';
 
 import { GlobalDataService } from './services/global-data.service';
 import { SessionService } from './services/session.service';
@@ -55,7 +56,8 @@ export const appRoutes: Routes = [
     SignInComponent,
     SignUpComponent,
     MusicContainerComponent,
-    HomeComponent
+    HomeComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
@@ -67,6 +69,9 @@ export const appRoutes: Routes = [
     RouterModule.forRoot( appRoutes )
   ],
   providers: [ GlobalDataService, SessionService, UserService, AlreadyInGuard, NoSessionGuard ],
+  entryComponents: [
+    UploadComponent
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

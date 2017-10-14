@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { UploadComponent } from '../upload/upload.component';
 import { SessionService } from '../services/session.service';
 import { Router } from "@angular/router";
 
@@ -9,7 +11,8 @@ import { Router } from "@angular/router";
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor( private sessionService: SessionService, private router: Router ) { }
+  constructor( private sessionService: SessionService, private router: Router,
+                public dialog: MatDialog ) { }
 
   ngOnInit() {
   }
@@ -21,6 +24,15 @@ export class ToolbarComponent implements OnInit {
         this.router.navigate(['/'])
       }
     )
+  }
+
+  openUpLoad() {
+      let dialogRef = this.dialog.open( UploadComponent, {
+          height: '500px',
+          width: '700px'
+      });
+
+
   }
 
 }
