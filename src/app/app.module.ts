@@ -19,10 +19,17 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { MusicContainerComponent } from './music-container/music-container.component';
 import { HomeComponent } from './home/home.component';
 
+import { GlobalDataService } from './services/global-data.service';
+import { SessionService } from './services/session.service';
+
+import { AlreadyInGuard } from './guards/already-in.guard';
+import { NoSessionGuard } from './guards/no-session.guard';
+
 export const appRoutes: Routes = [
   {
     path: '',
     component: LandingComponent,
+    canActivate: [ AlreadyInGuard ],
     children: [
       { path: '',
         component: SignInComponent,
@@ -34,6 +41,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'home',
+    canActivate: [ NoSessionGuard ],
     component: HomeComponent
   }
 ];
@@ -57,7 +65,7 @@ export const appRoutes: Routes = [
     NoopAnimationsModule,
     RouterModule.forRoot( appRoutes )
   ],
-  providers: [],
+  providers: [ GlobalDataService, SessionService, AlreadyInGuard, NoSessionGuard ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

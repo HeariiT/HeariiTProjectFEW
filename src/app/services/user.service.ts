@@ -15,40 +15,26 @@ export class UserService {
 
   postUser( formData ) {
 
-      var user = {
-          "email": formData.email,
-          "username": formData.username,
-          "password": formData.password,
-          "first_name": "Undefined",
-          "last_name": "Undefined"
-      }
-
-    const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
-    const options = new RequestOptions( { headers: headers } );
-
-    return this.http.post( this.backPath + '/sign_up', JSON.stringify( user ), options )
-          .map( ( res: Response ) => res );
-  }
-
-  signIn (formData){
     var user = {
         "email": formData.email,
-        "password": formData.password
+        "username": formData.username,
+        "password": formData.password,
+        "first_name": "Undefined",
+        "last_name": "Undefined"
     }
 
     const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
     const options = new RequestOptions( { headers: headers } );
 
-    return this.http.post( this.backPath + '/sign_in', JSON.stringify( user ), options )
-          .map( ( res: Response ) => res );
-
+    return this.http.post( this.backPath + '/sign_up', JSON.stringify( user ), options )
+             .map( ( res: Response ) => res );
   }
 
   getUser( formData ) {
 
-      var user = {
-          "username": formData.username,
-      }
+    var user = {
+        "username": formData.username,
+    }
 
     const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
     const options = new RequestOptions( { headers: headers } );
@@ -59,9 +45,9 @@ export class UserService {
 
   getEmail( formData ) {
 
-      var email = {
-          "email": formData.email,
-      }
+    var email = {
+        "email": formData.email,
+    }
 
     const headers = new Headers( { 'Content-Type': 'application/json; charset=utf-8' } );
     const options = new RequestOptions( { headers: headers } );

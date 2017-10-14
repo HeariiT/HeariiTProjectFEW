@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
+import { SessionService } from '../services/session.service';
+import { GlobalDataService } from '../services/global-data.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -26,20 +28,21 @@ export class SignInComponent implements OnInit {
   });
 
 
-  constructor(private uService: UserService, private router: Router) { }
+  constructor( private uService: UserService, private router: Router, private sessionService: SessionService,
+                 private gbService: GlobalDataService ) { }
 
   ngOnInit() {
   }
 
   onSubmit( ) {
-    this.userSignInResponse$ = this.uService.signIn( this.signInForm.value );
+    this.userSignInResponse$ = this.sessionService.signIn( this.signInForm.value );
 
     this.userSignInResponse$.subscribe(
       res => {
-          if ( res.status == 200 )
-          {
-              this.uService.signIn( this.signInForm.value );
-          }
+        if ( res.status == 200 ) {
+          this.gbService.updateAccessToken( res.headers.get( 'x-access-token' ) )
+          this.router.navigate( [ 'home' ] )
+        }
       },
       err => {
         this.falseCredentials = true;
