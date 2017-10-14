@@ -28,21 +28,10 @@ export class MusicContainerComponent implements OnInit {
   paused = true;
   currentIndex = -1;
   time="0:00";
+  diameter = 10;
 
-  musicSources = [
-    // {
-    //   title: "Summer' 78",
-    //   author: 'Yann Tiersen (DG Cover)',
-    //   album: 'N/A',
-    //   src: './assets/summer.mp3'
-    // },
-    // {
-    //   title: "Arrivals N.2",
-    //   author: "Dustin O'Halloran (DG Cover)",
-    //   album: 'N/A',
-    //   src: './assets/arrivals.mp3'
-    // }
-  ]
+  musicSources = []
+  songRequested = false;
 
   userData;
   constructor( private songService: SongManagementService ) {
@@ -72,33 +61,28 @@ export class MusicContainerComponent implements OnInit {
   ngOnInit( ) {
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
-    //for ( var i = 0; i < 20; i++ ) {
-    //  this.musicSources.push( this.musicSources[ 0 ] )
-    //}
   }
 
   playMusic( index ) {
-    let audio = this.myAudio.nativeElement;
+    if ( !this.songRequested && this.currentIndex != index ) {
+      this.songRequested = true
+      let audio = this.myAudio.nativeElement;
 
-    if ( this.currentIndex != index ) {
       var song_id = this.musicSources[ index ].id;
+      this.currentIndex = index;
 
       this.songService.downloadSong( song_id ).subscribe(
         res => {
-          var url = URL.createObjectURL( res.blob( ) )
-          audio.src = url
-          audio.play( )
+          audio.src = URL.createObjectURL( res.blob( ) )
+          this.songRequested = false
+
+          if ( audio.paused ) {
+            audio.play( )
+            this.paused = false
+          }
         }
       )
-
-      //audio.src = this.musicSources[ index ].src;
-      // this.currentIndex = index;
     }
-
-    // if ( audio.paused ) {
-    //   audio.play( )
-    //   this.paused = false
-    // }
   }
 
   audioEnded( ) {
@@ -154,22 +138,43 @@ export class MusicContainerComponent implements OnInit {
   }
 
   nextSong( ) {
-    let audio = this.myAudio.nativeElement;
-    this.currentIndex = ( this.currentIndex + 1 ) % this.musicSources.length;
-    audio.src = this.musicSources[ this.currentIndex ].src;
-    if ( !this.paused )
-      audio.play( )
+
+    if ( !this.songRequested ) {
+      this.songRequested = true
+      this.currentIndex = ( this.currentIndex + 1 ) % this.musicSources.length;
+      var song_id = this.musicSources[ this.currentIndex ].id;
+
+      let audio = this.myAudio.nativeElement;
+      this.songService.downloadSong( song_id ).subscribe(
+        res => {
+          audio.src = URL.createObjectURL( res.blob( ) )
+          if ( !this.paused )
+            audio.play( )
+          this.songRequested = false
+        }
+      )
+    }
   }
 
   prevSong( ) {
-    let audio = this.myAudio.nativeElement;
-    if ( this.currentIndex > 0 )
-      this.currentIndex = ( this.currentIndex - 1 )
-    else
-      this.currentIndex = ( this.musicSources.length - 1 )
-    audio.src = this.musicSources[ this.currentIndex ].src;
-    if ( !this.paused )
-      audio.play( )
+    if ( !this.songRequested ) {
+      this.songRequested = true
+      if ( this.currentIndex > 0 )
+        this.currentIndex = ( this.currentIndex - 1 )
+      else
+        this.currentIndex = ( this.musicSources.length - 1 )
+        var song_id = this.musicSources[ this.currentIndex ].id;
+
+      let audio = this.myAudio.nativeElement;
+      this.songService.downloadSong( song_id ).subscribe(
+        res => {
+          audio.src = URL.createObjectURL( res.blob( ) )
+          if ( !this.paused )
+            audio.play( )
+          this.songRequested = false
+        }
+      )
+    }
   }
 
   setVolume( v ) {
