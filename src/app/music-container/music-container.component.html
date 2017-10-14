@@ -46,19 +46,19 @@
     <div class="col-md-3 info-container white-font">
       <div class="">
         <div class="with-cool-font info-tag">TITLE</div>
-        <span class="info-size" [@fadeInOut]>
+        <span *ngIf="currentIndex!=-1" class="info-size" [@fadeInOut]>
           {{musicSources[currentIndex].title}}
         </span>
       </div>
       <div class="">
         <div class="with-cool-font info-tag">AUTHOR</div>
-        <span class="info-size">
+        <span *ngIf="currentIndex!=-1" class="info-size">
           {{musicSources[currentIndex].author}}
         </span>
       </div>
       <div class="">
         <div class="with-cool-font info-tag">ALBUM</div>
-        <span class="info-size">
+        <span *ngIf="currentIndex!=-1" class="info-size">
           {{musicSources[currentIndex].album}}
         </span>
       </div>

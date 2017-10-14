@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
+import { SongManagementService } from '../services/song-management.service';
 
 @Component({
   selector: 'app-music-container',
@@ -29,34 +30,46 @@ export class MusicContainerComponent implements OnInit {
   time="0:00";
 
   musicSources = [
-    {
-      title: "Summer' 78",
-      author: 'Yann Tiersen (DG Cover)',
-      album: 'N/A',
-      src: './assets/summer.mp3'
-    },
-    {
-      title: "Arrivals N.2",
-      author: "Dustin O'Halloran (DG Cover)",
-      album: 'N/A',
-      src: './assets/arrivals.mp3'
-    }
+    // {
+    //   title: "Summer' 78",
+    //   author: 'Yann Tiersen (DG Cover)',
+    //   album: 'N/A',
+    //   src: './assets/summer.mp3'
+    // },
+    // {
+    //   title: "Arrivals N.2",
+    //   author: "Dustin O'Halloran (DG Cover)",
+    //   album: 'N/A',
+    //   src: './assets/arrivals.mp3'
+    // }
   ]
 
   userData;
-  constructor( ) {
+  constructor( private songService: SongManagementService ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
 
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
+
+    songService.getAllSongs( ).subscribe(
+      res => {
+        for ( var i = 0; i < res.json( ).length; i++ ) {
+          this.musicSources.push({
+            title: res.json( )[ i ].title,
+            author: res.json( )[ i ].author,
+            album: res.json( )[ i ].album,
+            id: res.json( )[ i ].id
+          })
+        }
+        let audio = this.myAudio.nativeElement;
+
+      }
+    )
   }
 
   ngOnInit( ) {
-    let audio = this.myAudio.nativeElement;
-    audio.src = this.musicSources[ 0 ].src;
-    this.currentIndex = 0;
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
     //for ( var i = 0; i < 20; i++ ) {
@@ -68,14 +81,24 @@ export class MusicContainerComponent implements OnInit {
     let audio = this.myAudio.nativeElement;
 
     if ( this.currentIndex != index ) {
-      audio.src = this.musicSources[ index ].src;
-      this.currentIndex = index;
+      var song_id = this.musicSources[ index ].id;
+
+      this.songService.downloadSong( song_id ).subscribe(
+        res => {
+          var url = URL.createObjectURL( res.blob( ) )
+          audio.src = url
+          audio.play( )
+        }
+      )
+
+      //audio.src = this.musicSources[ index ].src;
+      // this.currentIndex = index;
     }
 
-    if ( audio.paused ) {
-      audio.play( )
-      this.paused = false
-    }
+    // if ( audio.paused ) {
+    //   audio.play( )
+    //   this.paused = false
+    // }
   }
 
   audioEnded( ) {
