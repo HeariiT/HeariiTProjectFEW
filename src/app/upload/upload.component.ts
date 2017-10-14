@@ -8,9 +8,21 @@ import {MatDialog, MatDialogRef,MAT_DIALOG_DATA} from '@angular/material';
 })
 export class UploadComponent implements OnInit {
 
+  fileName:string;
+
   constructor(public dialogRef: MatDialogRef<UploadComponent>,@Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
+  }
+
+  fileChange(event) {
+    let fileList: FileList = event.target.files;
+    if(fileList.length > 0) {
+        let file: File = fileList[0];
+        let formData:FormData = new FormData();
+        formData.append('uploadFile', file, file.name);
+        this.fileName = file.name;
+    }
   }
 
 }

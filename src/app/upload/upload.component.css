@@ -17,3 +17,16 @@
 .up-button{
   background-color: #007100;
 }
+
+.upload-button{
+  background-color: #F3FF00;
+  color: black;
+  margin-top: 30px;
+  margin-left: 40px;
+  width: 200px;
+  text-align: center;
+}
+
+[hidden] {
+  display: none !important;
+}
