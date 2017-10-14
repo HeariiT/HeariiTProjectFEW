@@ -17,6 +17,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { MusicContainerComponent } from './music-container/music-container.component';
 import { HomeComponent } from './home/home.component';
+import { UploadComponent } from './upload/upload.component';
 
 export const appRoutes: Routes = [
   {
@@ -45,7 +46,8 @@ export const appRoutes: Routes = [
     SignInComponent,
     SignUpComponent,
     MusicContainerComponent,
-    HomeComponent
+    HomeComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +56,9 @@ export const appRoutes: Routes = [
     MaterialModule,
     NoopAnimationsModule,
     RouterModule.forRoot( appRoutes )
+  ],
+  entryComponents: [
+    UploadComponent
   ],
   providers: [],
   bootstrap: [ AppComponent ]

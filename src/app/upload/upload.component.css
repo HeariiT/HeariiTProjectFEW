@@ -1,0 +1,19 @@
+.medium-width{
+  width: 300px;
+}
+
+.upload{
+  overflow: hidden;
+}
+
+.icon{
+  margin-left: 60px;
+}
+
+.inputs{
+  margin-top: 60px;
+}
+
+.up-button{
+  background-color: #007100;
+}
