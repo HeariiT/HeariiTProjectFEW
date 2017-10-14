@@ -71,7 +71,12 @@ export class SignUpComponent implements OnInit {
               this.sessionService.signIn( this.signUpForm.value ).subscribe(
                 ans => {
                   this.gbService.updateAccessToken( ans.headers.get( 'x-access-token' ) )
-                  this.router.navigate( [ 'home' ] )
+                  this.uService.getEmail( this.signUpForm.value ).subscribe(
+                    ans => {
+                      localStorage.setItem( 'userData', JSON.stringify( ans ) )
+                      this.router.navigate( [ 'home' ] )
+                    }
+                  )
                 }
               )
           }

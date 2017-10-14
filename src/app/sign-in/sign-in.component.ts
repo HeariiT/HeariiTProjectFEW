@@ -40,7 +40,12 @@ export class SignInComponent implements OnInit {
       res => {
         if ( res.status == 200 ) {
           this.gbService.updateAccessToken( res.headers.get( 'x-access-token' ) )
-          this.router.navigate( [ 'home' ] )
+          this.uService.getEmail( this.signInForm.value ).subscribe(
+            ans => {
+              localStorage.setItem( 'userData', JSON.stringify( ans ) )
+              this.router.navigate( [ 'home' ] )
+            }
+          )
         }
       },
       err => {
