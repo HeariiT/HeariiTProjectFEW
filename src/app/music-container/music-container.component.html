@@ -73,7 +73,7 @@
         <span class="white-font">{{time}}</span>
       </div>
       <div class="text-center">
-        <button mat-button mat-fab mat-mini-fab (click)="nextSong()">
+        <button mat-button mat-fab mat-mini-fab (click)="prevSong()">
           <mat-icon>skip_previous</mat-icon>
         </button>
         <button mat-button mat-fab (click)="toggleAudio()">
@@ -83,7 +83,7 @@
         <button mat-button mat-fab mat-mini-fab (click)="stopSong()">
           <mat-icon>stop</mat-icon>
         </button>
-        <button mat-button mat-fab mat-mini-fab mat-raised-button	(click)="prevSong()" style="margin-right: 10%;">
+        <button mat-button mat-fab mat-mini-fab mat-raised-button	(click)="nextSong()" style="margin-right: 10%;">
           <mat-icon>skip_next</mat-icon>
         </button>
         <mat-icon *ngIf="myAudio.volume>0.4&&!myAudio.muted" class="volume-icon" (click)="mute()">

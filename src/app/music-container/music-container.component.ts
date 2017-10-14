@@ -33,6 +33,8 @@ export class MusicContainerComponent implements OnInit {
   musicSources = []
   songRequested = false;
 
+  cache = []
+
   userData;
   constructor( private songService: SongManagementService ) {
     Observable.interval( 1000 ).subscribe( x => {
@@ -52,8 +54,24 @@ export class MusicContainerComponent implements OnInit {
             id: res.json( )[ i ].id
           })
         }
-        let audio = this.myAudio.nativeElement;
+        if ( this.musicSources.length > 0 ) {
+          this.songRequested = true
+          let audio = this.myAudio.nativeElement;
+          var song_id = this.musicSources[ 0 ].id;
+          this.currentIndex = 0;
+          this.songService.downloadSong( song_id ).subscribe(
+            res => {
+              var blob = res.blob( )
+              audio.src = URL.createObjectURL( blob )
+              this.addSongToCache({
+                song_id: song_id,
+                blob: blob
+              })
 
+              this.songRequested = false
+            }
+          )
+        }
       }
     )
   }
@@ -72,17 +90,32 @@ export class MusicContainerComponent implements OnInit {
       var song_id = this.musicSources[ index ].id;
       this.currentIndex = index;
 
-      this.songService.downloadSong( song_id ).subscribe(
-        res => {
-          audio.src = URL.createObjectURL( res.blob( ) )
-          this.songRequested = false
-
-          if ( audio.paused ) {
-            audio.play( )
-            this.paused = false
-          }
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( audio.paused ) {
+          audio.play( )
+          this.paused = false
         }
-      )
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+
+            this.songRequested = false
+
+            if ( audio.paused ) {
+              audio.play( )
+              this.paused = false
+            }
+          }
+        )
     }
   }
 
@@ -143,18 +176,34 @@ export class MusicContainerComponent implements OnInit {
     if ( !this.songRequested ) {
       this.songRequested = true
       this.currentIndex = ( this.currentIndex + 1 ) % this.musicSources.length;
+
       var song_id = this.musicSources[ this.currentIndex ].id;
 
       let audio = this.myAudio.nativeElement;
       audio.pause( )
-      this.songService.downloadSong( song_id ).subscribe(
-        res => {
-          audio.src = URL.createObjectURL( res.blob( ) )
-          if ( !this.paused )
-            audio.play( )
-          this.songRequested = false
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( audio.paused ) {
+          audio.play( )
+          this.paused = false
         }
-      )
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            if ( !this.paused )
+              audio.play( )
+            this.songRequested = false
+          }
+        )
     }
   }
 
@@ -169,14 +218,29 @@ export class MusicContainerComponent implements OnInit {
 
       let audio = this.myAudio.nativeElement;
       audio.pause( )
-      this.songService.downloadSong( song_id ).subscribe(
-        res => {
-          audio.src = URL.createObjectURL( res.blob( ) )
-          if ( !this.paused )
-            audio.play( )
-          this.songRequested = false
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
+        this.songRequested = false
+        if ( audio.paused ) {
+          audio.play( )
+          this.paused = false
         }
-      )
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            audio.src = URL.createObjectURL( blob )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            if ( !this.paused )
+              audio.play( )
+            this.songRequested = false
+          }
+        )
     }
   }
 
@@ -195,6 +259,19 @@ export class MusicContainerComponent implements OnInit {
   mute( ) {
     let audio = this.myAudio.nativeElement;
     audio.muted = !audio.muted
+  }
+
+  isOnCache( song_id ) {
+    for ( var i = 0; i < this.cache.length; i++ )
+      if ( this.cache[ i ].song_id == song_id )
+        return i
+    return -1
+  }
+
+  addSongToCache( obj ) {
+    this.cache.push( obj )
+    if ( this.cache.length > 5 )
+      this.cache = this.cache.slice( 1, this.cache.length )
   }
 
 }
