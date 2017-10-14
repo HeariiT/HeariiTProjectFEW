@@ -42,4 +42,12 @@ export class SessionService {
     this.gbService.destroySession( )
   }
 
+  validateToken( ) {
+    const headers = new Headers( this.headers );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.post( this.backPath + '/validate', JSON.stringify({}), options )
+          .map( ( res: Response ) => res );
+  }
+
 }
