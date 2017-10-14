@@ -186,7 +186,7 @@ export class MusicContainerComponent implements OnInit {
       if ( cacheIndex != -1 ) {
         audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
         this.songRequested = false
-        if ( audio.paused ) {
+        if ( !this.paused ) {
           audio.play( )
           this.paused = false
         }
@@ -199,8 +199,10 @@ export class MusicContainerComponent implements OnInit {
               song_id: song_id,
               blob: blob
             })
-            if ( !this.paused )
+            if ( !this.paused ) {
               audio.play( )
+              this.paused = false
+            }
             this.songRequested = false
           }
         )
@@ -223,7 +225,7 @@ export class MusicContainerComponent implements OnInit {
       if ( cacheIndex != -1 ) {
         audio.src = URL.createObjectURL( this.cache[ cacheIndex ].blob )
         this.songRequested = false
-        if ( audio.paused ) {
+        if ( !this.paused ) {
           audio.play( )
           this.paused = false
         }
@@ -236,8 +238,10 @@ export class MusicContainerComponent implements OnInit {
               song_id: song_id,
               blob: blob
             })
-            if ( !this.paused )
+            if ( !this.paused ) {
               audio.play( )
+              this.paused = false
+            }
             this.songRequested = false
           }
         )

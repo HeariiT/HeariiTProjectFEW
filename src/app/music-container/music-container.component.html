@@ -17,7 +17,7 @@
   <hr style="margin-bottom: 20px;">
   <div class="songs-container">
     <div class="" *ngFor="let song of musicSources; let i = index">
-      <div class="song-container">
+      <div class="song-container" [class.current-song]="currentIndex==i">
         <div class="row">
           <div class="col-md-1">
             <img src="./assets/logo.png" width="30">
