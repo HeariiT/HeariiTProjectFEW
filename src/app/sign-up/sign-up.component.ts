@@ -10,7 +10,6 @@ import { style, state, animate, transition, trigger } from '@angular/core';
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css'],
-  providers: [ UserService ],
   animations: [
       trigger('slideIn', [
         state('*', style({})),

@@ -43,10 +43,12 @@ export class MusicContainerComponent implements OnInit {
     }
   ]
 
+  userData;
   constructor( ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
+    this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
   }
 
   ngOnInit( ) {
