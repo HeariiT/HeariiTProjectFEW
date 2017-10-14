@@ -67,6 +67,7 @@ export class MusicContainerComponent implements OnInit {
     if ( !this.songRequested && this.currentIndex != index ) {
       this.songRequested = true
       let audio = this.myAudio.nativeElement;
+      audio.pause( )
 
       var song_id = this.musicSources[ index ].id;
       this.currentIndex = index;
@@ -145,6 +146,7 @@ export class MusicContainerComponent implements OnInit {
       var song_id = this.musicSources[ this.currentIndex ].id;
 
       let audio = this.myAudio.nativeElement;
+      audio.pause( )
       this.songService.downloadSong( song_id ).subscribe(
         res => {
           audio.src = URL.createObjectURL( res.blob( ) )
@@ -166,6 +168,7 @@ export class MusicContainerComponent implements OnInit {
         var song_id = this.musicSources[ this.currentIndex ].id;
 
       let audio = this.myAudio.nativeElement;
+      audio.pause( )
       this.songService.downloadSong( song_id ).subscribe(
         res => {
           audio.src = URL.createObjectURL( res.blob( ) )
