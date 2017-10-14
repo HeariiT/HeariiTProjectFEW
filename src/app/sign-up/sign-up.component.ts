@@ -1,13 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
+import { SessionService } from '../services/session.service';
+import { GlobalDataService } from '../services/global-data.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { style, state, animate, transition, trigger } from '@angular/core';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css'],
-  providers: [ UserService ]
+  providers: [ UserService ],
+  animations: [
+      trigger('slideIn', [
+        state('*', style({})),
+        state('void', style({})),
+        transition('* => void', [
+            style({ height: '*' }),
+            animate(150, style({ height: 0}))
+        ]),
+        transition('void => *', [
+            style({ height: '0' }),
+            animate(150, style({ height: '*' }))
+        ])
+    ]),
+    trigger('fadeInOut', [
+        transition(':enter', [
+          style({opacity:0}),
+          animate(200, style({opacity:1}))
+        ]),
+        transition(':leave', [
+          animate(200, style({opacity:0}))
+        ])
+    ])
+  ]
 })
 export class SignUpComponent implements OnInit {
 
@@ -31,7 +57,8 @@ export class SignUpComponent implements OnInit {
     password: new FormControl(null,[Validators.required,Validators.minLength(8),Validators.maxLength(72)]),
   });
 
-  constructor(private uService: UserService, private router: Router) { }
+  constructor( private uService: UserService, private router: Router, private sessionService: SessionService,
+                private gbService: GlobalDataService ) { }
 
   ngOnInit() {
   }
@@ -41,9 +68,13 @@ export class SignUpComponent implements OnInit {
 
     this.userPostResponse$.subscribe(
       res => {
-          if ( res.status == 200 )
-          {
-              this.uService.postUser( this.signUpForm.value );
+          if ( res.status == 200 ) {
+              this.sessionService.signIn( this.signUpForm.value ).subscribe(
+                ans => {
+                  this.gbService.updateAccessToken( ans.headers.get( 'x-access-token' ) )
+                  this.router.navigate( [ 'home' ] )
+                }
+              )
           }
       },
       err => {

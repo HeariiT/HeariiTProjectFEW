@@ -7,11 +7,11 @@
       <input class="white-font form-input" formControlName="username"
       (ngModelChange)="userInputChanged(); checkExistingUsername();" required>
       <div *ngIf="signUpForm.controls['username'].hasError('required') && checkForUserEmptyResponse()"
-        class="alert alert-danger" style="width: 80%;">
+        class="alert alert-danger" style="width: 80%;" [@fadeInOut]>
         Username is required
       </div>
       <div *ngIf="signUpForm.controls['username'].hasError('pattern') && checkForUserEmptyResponse()"
-       class="alert alert-danger" style="width: 80%;">
+       class="alert alert-danger" style="width: 80%;" [@fadeInOut]>
         Invalid Username
       </div>
       <div *ngIf=" verifyUser() && checkForUserEmptyResponse()"
