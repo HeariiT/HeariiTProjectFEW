@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
 import { SongManagementService } from '../services/song-management.service';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-music-container',
@@ -32,6 +33,8 @@ export class MusicContainerComponent implements OnInit {
 
   musicSources = []
   songRequested = false;
+  downloadRequested = false;
+  downloadIndex = -1;
 
   cache = []
 
@@ -117,6 +120,43 @@ export class MusicContainerComponent implements OnInit {
           }
         )
     }
+  }
+
+  download( index ) {
+    if ( !this.downloadRequested ) {
+      this.downloadRequested = true
+      this.downloadIndex = index
+      let audio = this.myAudio.nativeElement;
+      var song_id = this.musicSources[ index ].id;
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        FileSaver.saveAs( this.cache[ cacheIndex ].blob, this.createSongName( song_id ) )
+        this.downloadRequested = false
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            FileSaver.saveAs( blob, this.createSongName( song_id ) )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            this.downloadRequested = false
+          }
+        )
+    }
+  }
+
+  createSongName( song_id ) {
+    var name = ""
+    for ( var i = 0; i < this.musicSources.length; i++ )
+      if ( this.musicSources[ i ].id == song_id ) {
+        name += this.musicSources[ i ].title + " - ";
+        name += this.musicSources[ i ].author + " ";
+        break
+      }
+    return name + '.mp3'
   }
 
   audioEnded( ) {
