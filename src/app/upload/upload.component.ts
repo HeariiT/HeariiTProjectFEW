@@ -20,6 +20,8 @@ export class UploadComponent implements OnInit {
 
   uploadForm = new FormGroup({
     titl: new FormControl(null,[Validators.required]),
+    author: new FormControl(null,[Validators.required]),
+    album: new FormControl(null,[Validators.required]),
     attachment: new FormControl(null,[Validators.required])
   });
 
@@ -49,9 +51,9 @@ export class UploadComponent implements OnInit {
       },
       err => {
         console.log( err );
-      },
-      () => this.dialogRef.close()
+      }
     );
+    this.dialogRef.close()
   }
 
 }

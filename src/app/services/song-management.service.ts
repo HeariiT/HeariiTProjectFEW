@@ -41,6 +41,8 @@ export class SongManagementService {
 
    let songData:FormData = new FormData();
    songData.append('title',formData.titl);
+   songData.append('author',formData.author);
+   songData.append('album',formData.album);
    songData.append('attachment',file,file.name);
    let headers = new Headers();
    headers.append('enctype', 'multipart/form-data');
