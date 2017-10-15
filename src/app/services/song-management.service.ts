@@ -37,4 +37,21 @@ export class SongManagementService {
              .map( ( res: Response ) => res );
   }
 
+  uploadSong( formData , file) {
+
+   let songData:FormData = new FormData();
+   songData.append('title',formData.titl);
+   songData.append('author',formData.author);
+   songData.append('album',formData.album);
+   songData.append('attachment',file,file.name);
+   let headers = new Headers();
+   headers.append('enctype', 'multipart/form-data');
+   headers.append('x-access-token' , localStorage.getItem( 'accessToken' ));
+   headers.append('Accept', 'application/json');
+   let options = new RequestOptions({ headers: headers });
+
+    return this.http.post( this.backPath + '/songs', songData, options )
+             .map( ( res: Response ) => res );
+  }
+
 }

@@ -1,55 +1,58 @@
 <div class="upload">
-  <div class="container">
 
-    <div class="row">
-      <div class="col-md-4">
-        <h1 class="white-font with-cool-font">UPLOAD A SONG</h1>
+  <form name="uploadForm" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-4">
+          <h1 class="white-font with-cool-font">UPLOAD A SONG</h1>
+        </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-3 inputs">
+          <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Title" formControlName="titl" >
+          </mat-input-container>
+          <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Author" formControlName="author">
+          </mat-input-container>
+          <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Album" formControlName="album">
+          </mat-input-container>
+        </div>
+        <div class="col-md-6 ">
+          <img class="icon" mat-card-image src="../assets/logo.ico">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <label class="btn  up-button with-cool-font" style="color:white; text-align:center;">
+            <mat-icon>cloud_upload</mat-icon>
+            BROWSE <input type="file" (change)="fileChange($event)"
+            accept=".mp3" formControlName="attachment" hidden/>
+          </label>
+        </div>
+        <div class="col-md-3">
+          <mat-input-container class="medium-width" >
+              <input #title matInput placeholder={{fileName}} disabled>
+          </mat-input-container>
+        </div>
+      </div>
+
+
+
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+          <button mat-button class="upload-button  with-cool-font" >
+            <mat-icon>music_note</mat-icon>
+            UPLOAD
+          </button>
+        </div>
+      </div>
+
     </div>
-
-    <div class="row">
-      <div class="col-md-3 inputs">
-        <mat-input-container class="medium-width" >
-            <input #title matInput placeholder="Title">
-        </mat-input-container>
-        <mat-input-container class="medium-width" >
-            <input #title matInput placeholder="Author">
-        </mat-input-container>
-        <mat-input-container class="medium-width" >
-            <input #title matInput placeholder="Album">
-        </mat-input-container>
-      </div>
-      <div class="col-md-6 ">
-        <img class="icon" mat-card-image src="../assets/logo.ico">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-4">
-        <label class="btn  up-button with-cool-font" style="color:white; text-align:center;">
-          <mat-icon>cloud_upload</mat-icon>
-          BROWSE <input type="file" (change)="fileChange($event)"
-          accept=".mp3" hidden/>
-        </label>
-      </div>
-      <div class="col-md-3">
-        <mat-input-container class="medium-width" >
-            <input #title matInput placeholder={{fileName}} disabled>
-        </mat-input-container>
-      </div>
-    </div>
-
-
-
-    <div class="row">
-      <div class="col-md-2"></div>
-      <div class="col-md-4">
-        <button mat-button class="upload-button  with-cool-font" >
-          <mat-icon>music_note</mat-icon>
-          UPLOAD
-        </button>
-      </div>
-    </div>
-
-  </div>
+  </form>
 </div>
