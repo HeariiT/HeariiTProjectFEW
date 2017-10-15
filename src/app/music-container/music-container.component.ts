@@ -1,7 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { NewCategoryComponent } from '../new-category/new-category.component';
+import { NewMatchComponent } from '../new-match/new-match.component';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
 import { SongManagementService } from '../services/song-management.service';
+import { CategoryService } from '../services/category.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { FormControl } from '@angular/forms';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-music-container',
@@ -32,11 +38,14 @@ export class MusicContainerComponent implements OnInit {
 
   musicSources = []
   songRequested = false;
+  downloadRequested = false;
+  downloadIndex = -1;
 
   cache = []
 
   userData;
-  constructor( private songService: SongManagementService ) {
+  constructor( private songService: SongManagementService, public dialog: MatDialog,
+                 private catService: CategoryService ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
@@ -76,9 +85,36 @@ export class MusicContainerComponent implements OnInit {
     )
   }
 
+  myControl: FormControl = new FormControl();
+  options = [];
+  categories_data =[]
+  filteredOptions: Observable<string[]>;
+
   ngOnInit( ) {
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
+    this.catService.getDefaultCategories( ).subscribe(
+      res => {
+        this.categories_data = res.json( )
+        this.catService.getUserCategories( ).subscribe(
+          ans => {
+            this.categories_data = this.categories_data.concat( ans.json( ) )
+            this.options.push( 'All' )
+            for ( var i = 0; i < this.categories_data.length; i++ )
+              this.options.push( this.categories_data[ i ].category_name )
+            this.filteredOptions = this.myControl.valueChanges
+               .startWith( null )
+               .map( val => val ? this.filter( val ) : this.options.slice( ) );
+          }
+        )
+      }
+    )
+  }
+
+  filter( val: string ): string[] {
+    return this.options.filter(
+      option => option.toLowerCase( ).indexOf( val.toLowerCase( ) ) === 0
+    );
   }
 
   playMusic( index ) {
@@ -117,6 +153,43 @@ export class MusicContainerComponent implements OnInit {
           }
         )
     }
+  }
+
+  download( index ) {
+    if ( !this.downloadRequested ) {
+      this.downloadRequested = true
+      this.downloadIndex = index
+      let audio = this.myAudio.nativeElement;
+      var song_id = this.musicSources[ index ].id;
+
+      var cacheIndex = this.isOnCache( song_id )
+      if ( cacheIndex != -1 ) {
+        FileSaver.saveAs( this.cache[ cacheIndex ].blob, this.createSongName( song_id ) )
+        this.downloadRequested = false
+      } else
+        this.songService.downloadSong( song_id ).subscribe(
+          res => {
+            var blob = res.blob( )
+            FileSaver.saveAs( blob, this.createSongName( song_id ) )
+            this.addSongToCache({
+              song_id: song_id,
+              blob: blob
+            })
+            this.downloadRequested = false
+          }
+        )
+    }
+  }
+
+  createSongName( song_id ) {
+    var name = ""
+    for ( var i = 0; i < this.musicSources.length; i++ )
+      if ( this.musicSources[ i ].id == song_id ) {
+        name += this.musicSources[ i ].title + " - ";
+        name += this.musicSources[ i ].author + " ";
+        break
+      }
+    return name + '.mp3'
   }
 
   audioEnded( ) {
@@ -276,6 +349,148 @@ export class MusicContainerComponent implements OnInit {
     this.cache.push( obj )
     if ( this.cache.length > 5 )
       this.cache = this.cache.slice( 1, this.cache.length )
+  }
+
+  openNewCategory() {
+    let dialogRef = this.dialog.open( NewCategoryComponent, {
+        height: '210px',
+        width: '300px'
+    });
+    dialogRef.afterClosed( ).subscribe(
+      () => {
+        this.categories_data = []
+        this.options = []
+        this.catService.getDefaultCategories( ).subscribe(
+          res => {
+            this.categories_data = res.json( )
+            this.catService.getUserCategories( ).subscribe(
+              ans => {
+                this.categories_data = this.categories_data.concat( ans.json( ) )
+                this.options.push( 'All' )
+                for ( var i = 0; i < this.categories_data.length; i++ )
+                  this.options.push( this.categories_data[ i ].category_name )
+                this.filteredOptions = this.myControl.valueChanges
+                   .startWith( null )
+                   .map( val => val ? this.filter( val ) : this.options.slice( ) );
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+
+  openNewMatch( index ) {
+    this.catService.getCategoryForFile( this.musicSources[ index ].id ).subscribe(
+      res => {
+        let dialogRef = this.dialog.open( NewMatchComponent, {
+            height: '230px',
+            width: '300px'
+        });
+        dialogRef.componentInstance.res = res.json( )
+        dialogRef.componentInstance.file_id = this.musicSources[ index ].id
+      }
+    )
+  }
+
+  categoryIdFrom( catName ) {
+    for ( var i = 0; i < this.categories_data.length; i++ )
+      if ( this.categories_data[ i ].category_name == catName )
+        return this.categories_data[ i ].category_id
+    return 'NotFound'
+  }
+
+  updateMusicResources( e ) {
+    if ( e.option.value == 'All' ) {
+      this.musicSources = []
+      this.currentIndex = -1
+      this.cache = []
+      this.songService.getAllSongs( ).subscribe(
+        res => {
+          for ( var i = 0; i < res.json( ).length; i++ ) {
+            this.musicSources.push({
+              title: res.json( )[ i ].title,
+              author: res.json( )[ i ].author,
+              album: res.json( )[ i ].album,
+              id: res.json( )[ i ].id
+            })
+          }
+          if ( this.musicSources.length > 0 ) {
+            this.songRequested = true
+            let audio = this.myAudio.nativeElement;
+            var song_id = this.musicSources[ 0 ].id;
+            this.currentIndex = 0;
+            this.songService.downloadSong( song_id ).subscribe(
+              res => {
+                var blob = res.blob( )
+                audio.src = URL.createObjectURL( blob )
+                this.addSongToCache({
+                  song_id: song_id,
+                  blob: blob
+                })
+
+                this.songRequested = false
+              }
+            )
+          }
+        }
+      )
+    }
+    else
+      this.catService.getFilesForCategory( this.categoryIdFrom( e.option.value ) ).subscribe(
+        res => {
+          this.musicSources = []
+          this.cache = []
+          for ( var i = 0; i < res.json( ).length; i++ ) {
+            this.musicSources.push({
+              title: res.json( )[ i ].title,
+              author: res.json( )[ i ].author,
+              album: res.json( )[ i ].album,
+              id: res.json( )[ i ].id
+            })
+          }
+          if ( this.musicSources.length > 0 ) {
+            this.songRequested = true
+            let audio = this.myAudio.nativeElement;
+            var song_id = this.musicSources[ 0 ].id;
+            this.currentIndex = 0;
+            this.songService.downloadSong( song_id ).subscribe(
+              res => {
+                var blob = res.blob( )
+                audio.src = URL.createObjectURL( blob )
+                this.addSongToCache({
+                  song_id: song_id,
+                  blob: blob
+                })
+
+                this.songRequested = false
+              }
+            )
+          } else {
+            this.currentIndex = -1;
+          }
+        },
+        error => {
+          console.log( error )
+        },
+        () => {
+
+        }
+      )
+  }
+
+  deleteSong( index ) {
+    var song_id = this.musicSources[ index ].id
+    this.songService.deleteSong( song_id ).subscribe(
+      () => {
+        if ( this.currentIndex == index ) {
+          this.nextSong( )
+          this.currentIndex--
+        }
+        this.musicSources = this.musicSources.slice( 0, index )
+          .concat( this.musicSources.slice( index + 1, this.musicSources.length ) )
+      }
+    )
   }
 
 }

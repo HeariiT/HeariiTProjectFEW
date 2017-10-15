@@ -1,0 +1,8 @@
+<div class="text-center">
+  <h3 class="white-font with-cool-font">ADD A NEW CATEGORY!</h3>
+  <input #catInput class="form-input">
+  <div class="with-roboto" style="color:#BB0000; margin-bottom:10px" *ngIf="errorOnPost">Try another category name...</div>
+  <button mat-button class="with-cool-font white-font" style="background-color:green" (click)="postCategory(catInput.value)">
+    ADD
+  </button>
+</div>

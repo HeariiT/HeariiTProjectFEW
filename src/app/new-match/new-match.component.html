@@ -1,0 +1,22 @@
+<div class="text-center">
+  <h3 *ngIf="res!=undefined&&res.error!=undefined" class="white-font with-cool-font">CATEGORIZE THIS FILE!</h3>
+  <h3 *ngIf="res!=undefined&&res.error===undefined" class="white-font with-cool-font">
+    CATEGORY:
+  </h3>
+  <h4 *ngIf="res!=undefined&&res.error===undefined" class="white-font with-roboto">
+    {{res.category_name}}
+  </h4>
+
+  <input #catInput class="form-input" placeholder="Filter by category..." aria-label="Number" matInput
+    [formControl]="myControl" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-autocomplete>
+
+  <button mat-button class="with-cool-font white-font" style="background-color:green" (click)="createMatch(catInput.value)">
+    <span *ngIf="res!=undefined&&res.error!=undefined">ADD</span>
+    <span *ngIf="res!=undefined&&res.error===undefined">UPDATE</span>
+  </button>
+</div>
