@@ -26,6 +26,7 @@ export class NewCategoryComponent implements OnInit {
           this.errorOnPost = true
         },
         () => {
+          this.errorOnPost = false
           this.closeDialog( )
         }
       )

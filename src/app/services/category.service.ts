@@ -17,6 +17,23 @@ export class CategoryService {
     )
   }
 
+  getDefaultCategories( ) {
+    return this.http.get( this.backPath + '/categories', null )
+             .map( ( res: Response ) => res );
+  }
+
+  getUserCategories( ) {
+    var accessToken = localStorage.getItem( 'accessToken' )
+    var hds = {
+      'Content-Type' : 'application/json; charset=utf-8',
+      'x-access-token' : accessToken
+    }
+    const headers = new Headers( hds );
+    const options = new RequestOptions( { headers: headers } );
+    return this.http.get( this.backPath + '/user_categories', options )
+             .map( ( res: Response ) => res );
+  }
+
   postCategory( catName ) {
     var accessToken = localStorage.getItem( 'accessToken' )
     var body = {

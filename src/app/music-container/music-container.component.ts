@@ -3,7 +3,9 @@ import { NewCategoryComponent } from '../new-category/new-category.component';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
 import { SongManagementService } from '../services/song-management.service';
+import { CategoryService } from '../services/category.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { FormControl } from '@angular/forms';
 import * as FileSaver from 'file-saver';
 
 @Component({
@@ -41,7 +43,8 @@ export class MusicContainerComponent implements OnInit {
   cache = []
 
   userData;
-  constructor( private songService: SongManagementService, public dialog: MatDialog ) {
+  constructor( private songService: SongManagementService, public dialog: MatDialog,
+                 private catService: CategoryService ) {
     Observable.interval( 1000 ).subscribe( x => {
       this.value( )
     });
@@ -81,9 +84,35 @@ export class MusicContainerComponent implements OnInit {
     )
   }
 
+  myControl: FormControl = new FormControl();
+  options = [];
+  categories_data =[]
+  filteredOptions: Observable<string[]>;
+
   ngOnInit( ) {
     if ( localStorage.getItem( 'userData' ) != null )
       this.userData = JSON.parse( JSON.parse( localStorage.getItem( 'userData' ) )._body )
+    this.catService.getDefaultCategories( ).subscribe(
+      res => {
+        this.categories_data = res.json( )
+        this.catService.getUserCategories( ).subscribe(
+          ans => {
+            this.categories_data = this.categories_data.concat( ans.json( ) )
+            for ( var i = 0; i < this.categories_data.length; i++ )
+              this.options.push( this.categories_data[ i ].category_name )
+            this.filteredOptions = this.myControl.valueChanges
+               .startWith( null )
+               .map( val => val ? this.filter( val ) : this.options.slice( ) );
+          }
+        )
+      }
+    )
+  }
+
+  filter( val: string ): string[] {
+    return this.options.filter(
+      option => option.toLowerCase( ).indexOf( val.toLowerCase( ) ) === 0
+    );
   }
 
   playMusic( index ) {
@@ -325,6 +354,29 @@ export class MusicContainerComponent implements OnInit {
         height: '210px',
         width: '300px'
     });
+    dialogRef.afterClosed( ).subscribe(
+      () => {
+        this.catService.getDefaultCategories( ).subscribe(
+          res => {
+            this.categories_data = res.json( )
+            this.catService.getUserCategories( ).subscribe(
+              ans => {
+                this.categories_data = this.categories_data.concat( ans.json( ) )
+                for ( var i = 0; i < this.categories_data.length; i++ )
+                  this.options.push( this.categories_data[ i ].category_name )
+                this.filteredOptions = this.myControl.valueChanges
+                   .startWith( null )
+                   .map( val => val ? this.filter( val ) : this.options.slice( ) );
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+
+  printSelection( e ) {
+    console.log( e.option.value )
   }
 
 }

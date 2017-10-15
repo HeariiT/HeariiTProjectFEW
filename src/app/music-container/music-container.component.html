@@ -9,7 +9,13 @@
 
     <div class="cold-md-4 white-font">
       Category
-      <input class="cat-input">
+      <input class="cat-input" placeholder="Type one category..." aria-label="Number" matInput
+        [formControl]="myControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="printSelection($event)">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
       <button class="add-cat-btn" (click)="openNewCategory()">+</button>
     </div>
   </div>
