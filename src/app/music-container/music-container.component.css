@@ -94,8 +94,25 @@ h2 {
 .icon {
   vertical-align: middle;
   border-radius: 5px;
-  background-color: #827D80;
   cursor: pointer;
+
+  border: none;
+
+  -webkit-transition: background-color 100ms linear;
+  -ms-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
+}
+
+.icon:hover {
+  background-color: #08F720;
+
+  -webkit-transition: background-color 50ms linear;
+  -ms-transition: background-color 50ms linear;
+  transition: background-color 50ms linear;
+}
+
+.icon:active {
+  background-color: #024A09;
 }
 
 .to-right {

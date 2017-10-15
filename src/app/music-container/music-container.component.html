@@ -9,9 +9,9 @@
 
     <div class="cold-md-4 white-font">
       Category
-      <input class="cat-input" placeholder="Type one category..." aria-label="Number" matInput
+      <input class="cat-input" placeholder="Filter by category..." aria-label="Number" matInput
         [formControl]="myControl" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="printSelection($event)">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="updateMusicResources($event)">
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             {{ option }}
           </mat-option>

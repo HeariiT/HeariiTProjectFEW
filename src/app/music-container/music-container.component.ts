@@ -98,6 +98,7 @@ export class MusicContainerComponent implements OnInit {
         this.catService.getUserCategories( ).subscribe(
           ans => {
             this.categories_data = this.categories_data.concat( ans.json( ) )
+            this.options.push( 'All' )
             for ( var i = 0; i < this.categories_data.length; i++ )
               this.options.push( this.categories_data[ i ].category_name )
             this.filteredOptions = this.myControl.valueChanges
@@ -356,12 +357,15 @@ export class MusicContainerComponent implements OnInit {
     });
     dialogRef.afterClosed( ).subscribe(
       () => {
+        this.categories_data = []
+        this.options = []
         this.catService.getDefaultCategories( ).subscribe(
           res => {
             this.categories_data = res.json( )
             this.catService.getUserCategories( ).subscribe(
               ans => {
                 this.categories_data = this.categories_data.concat( ans.json( ) )
+                this.options.push( 'All' )
                 for ( var i = 0; i < this.categories_data.length; i++ )
                   this.options.push( this.categories_data[ i ].category_name )
                 this.filteredOptions = this.myControl.valueChanges
@@ -375,8 +379,90 @@ export class MusicContainerComponent implements OnInit {
     )
   }
 
-  printSelection( e ) {
-    console.log( e.option.value )
+  categoryIdFrom( catName ) {
+    for ( var i = 0; i < this.categories_data.length; i++ )
+      if ( this.categories_data[ i ].category_name == catName )
+        return this.categories_data[ i ].category_id
+    return 'NotFound'
+  }
+
+  updateMusicResources( e ) {
+    if ( e.option.value == 'All' ) {
+      this.musicSources = []
+      this.currentIndex = -1
+      this.cache = []
+      this.songService.getAllSongs( ).subscribe(
+        res => {
+          for ( var i = 0; i < res.json( ).length; i++ ) {
+            this.musicSources.push({
+              title: res.json( )[ i ].title,
+              author: res.json( )[ i ].author,
+              album: res.json( )[ i ].album,
+              id: res.json( )[ i ].id
+            })
+          }
+          if ( this.musicSources.length > 0 ) {
+            this.songRequested = true
+            let audio = this.myAudio.nativeElement;
+            var song_id = this.musicSources[ 0 ].id;
+            this.currentIndex = 0;
+            this.songService.downloadSong( song_id ).subscribe(
+              res => {
+                var blob = res.blob( )
+                audio.src = URL.createObjectURL( blob )
+                this.addSongToCache({
+                  song_id: song_id,
+                  blob: blob
+                })
+
+                this.songRequested = false
+              }
+            )
+          }
+        }
+      )
+    }
+    else
+      this.catService.getFilesForCategory( this.categoryIdFrom( e.option.value ) ).subscribe(
+        res => {
+          this.musicSources = []
+          this.cache = []
+          for ( var i = 0; i < res.json( ).length; i++ ) {
+            this.musicSources.push({
+              title: res.json( )[ i ].title,
+              author: res.json( )[ i ].author,
+              album: res.json( )[ i ].album,
+              id: res.json( )[ i ].id
+            })
+          }
+          if ( this.musicSources.length > 0 ) {
+            this.songRequested = true
+            let audio = this.myAudio.nativeElement;
+            var song_id = this.musicSources[ 0 ].id;
+            this.currentIndex = 0;
+            this.songService.downloadSong( song_id ).subscribe(
+              res => {
+                var blob = res.blob( )
+                audio.src = URL.createObjectURL( blob )
+                this.addSongToCache({
+                  song_id: song_id,
+                  blob: blob
+                })
+
+                this.songRequested = false
+              }
+            )
+          } else {
+            this.currentIndex = -1;
+          }
+        },
+        error => {
+          console.log( error )
+        },
+        () => {
+
+        }
+      )
   }
 
 }

@@ -34,6 +34,18 @@ export class CategoryService {
              .map( ( res: Response ) => res );
   }
 
+  getFilesForCategory( cat_id ) {
+    var accessToken = localStorage.getItem( 'accessToken' )
+    var hds = {
+      'Content-Type' : 'application/json; charset=utf-8',
+      'x-access-token' : accessToken
+    }
+    const headers = new Headers( hds );
+    const options = new RequestOptions( { headers: headers } );
+    return this.http.get( this.backPath + '/files_for_category/' + cat_id, options )
+             .map( ( res: Response ) => res );
+  }
+
   postCategory( catName ) {
     var accessToken = localStorage.getItem( 'accessToken' )
     var body = {
