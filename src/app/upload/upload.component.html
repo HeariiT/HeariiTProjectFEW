@@ -29,7 +29,7 @@
       <div class="row">
         <div class="col-md-4">
           <label class="btn  up-button with-cool-font" style="color:white; text-align:center;">
-            <mat-icon>cloud_upload</mat-icon>
+            <mat-icon style="vertical-align:middle">cloud_upload</mat-icon>
             BROWSE <input type="file" (change)="fileChange($event)"
             accept=".mp3" formControlName="attachment" hidden/>
           </label>
@@ -47,7 +47,8 @@
         <div class="col-md-2"></div>
         <div class="col-md-4">
           <button mat-button class="upload-button  with-cool-font" >
-            <mat-icon>music_note</mat-icon>
+            <mat-icon *ngIf="!uploadRequested" style="vertical-align:middle">music_note</mat-icon>
+            <img *ngIf="uploadRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
             UPLOAD
           </button>
         </div>

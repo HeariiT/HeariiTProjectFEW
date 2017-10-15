@@ -37,23 +37,25 @@ export class UploadComponent implements OnInit {
     if(this.fileList.length > 0) {
         this.file = this.fileList[0];
         this.fileName = this.file.name;
-        console.log(this.file.type);
     }
   }
 
+  uploadRequested = false;
+
   onSubmit(){
     this.uploadSongResponse$ = this.songManService.uploadSong(this.uploadForm.value,this.file);
+    this.uploadRequested = true;
     this.uploadSongResponse$.subscribe(
       res => {
         if (res.status == 200){
-          console.log( "OK: user posted!" )
+          this.uploadRequested = false
+          this.dialogRef.close( )
         }
       },
       err => {
         console.log( err );
       }
     );
-    this.dialogRef.close()
   }
 
 }
