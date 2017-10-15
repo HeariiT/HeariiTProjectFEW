@@ -29,6 +29,7 @@ import { CategoryService } from './services/category.service';
 import { AlreadyInGuard } from './guards/already-in.guard';
 import { NoSessionGuard } from './guards/no-session.guard';
 import { NewCategoryComponent } from './new-category/new-category.component';
+import { NewMatchComponent } from './new-match/new-match.component';
 
 export const appRoutes: Routes = [
   {
@@ -61,7 +62,8 @@ export const appRoutes: Routes = [
     MusicContainerComponent,
     HomeComponent,
     UploadComponent,
-    NewCategoryComponent
+    NewCategoryComponent,
+    NewMatchComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +76,8 @@ export const appRoutes: Routes = [
   ],
   entryComponents: [
     UploadComponent,
-    NewCategoryComponent
+    NewCategoryComponent,
+    NewMatchComponent
   ],
   providers: [
     GlobalDataService,

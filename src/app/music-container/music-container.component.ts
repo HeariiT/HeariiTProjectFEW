@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NewCategoryComponent } from '../new-category/new-category.component';
+import { NewMatchComponent } from '../new-match/new-match.component';
 import { Observable } from 'rxjs/Rx';
 import { style, state, animate, transition, trigger } from '@angular/core';
 import { SongManagementService } from '../services/song-management.service';
@@ -375,6 +376,19 @@ export class MusicContainerComponent implements OnInit {
             )
           }
         )
+      }
+    )
+  }
+
+  openNewMatch( index ) {
+    this.catService.getCategoryForFile( this.musicSources[ index ].id ).subscribe(
+      res => {
+        let dialogRef = this.dialog.open( NewMatchComponent, {
+            height: '230px',
+            width: '300px'
+        });
+        dialogRef.componentInstance.res = res.json( )
+        dialogRef.componentInstance.file_id = this.musicSources[ index ].id
       }
     )
   }

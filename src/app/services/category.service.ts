@@ -17,6 +17,40 @@ export class CategoryService {
     )
   }
 
+  createMatch( file_id, category_id ) {
+    var accessToken = localStorage.getItem( 'accessToken' )
+    var body = {
+      file_id: file_id,
+      category_id : category_id
+    }
+    var hds = {
+      'Content-Type' : 'application/json; charset=utf-8',
+      'x-access-token' : accessToken
+    }
+    const headers = new Headers( hds );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.post( this.backPath + '/match', JSON.stringify( body ), options )
+             .map( ( res: Response ) => res );
+  }
+
+  updateMatch( file_id, category_id ) {
+    var accessToken = localStorage.getItem( 'accessToken' )
+    var body = {
+      file_id: file_id,
+      category_id : category_id
+    }
+    var hds = {
+      'Content-Type' : 'application/json; charset=utf-8',
+      'x-access-token' : accessToken
+    }
+    const headers = new Headers( hds );
+    const options = new RequestOptions( { headers: headers } );
+
+    return this.http.put( this.backPath + '/match', JSON.stringify( body ), options )
+             .map( ( res: Response ) => res );
+  }
+
   getDefaultCategories( ) {
     return this.http.get( this.backPath + '/categories', null )
              .map( ( res: Response ) => res );
@@ -43,6 +77,18 @@ export class CategoryService {
     const headers = new Headers( hds );
     const options = new RequestOptions( { headers: headers } );
     return this.http.get( this.backPath + '/files_for_category/' + cat_id, options )
+             .map( ( res: Response ) => res );
+  }
+
+  getCategoryForFile( file_id ) {
+    var accessToken = localStorage.getItem( 'accessToken' )
+    var hds = {
+      'Content-Type' : 'application/json; charset=utf-8',
+      'x-access-token' : accessToken
+    }
+    const headers = new Headers( hds );
+    const options = new RequestOptions( { headers: headers } );
+    return this.http.get( this.backPath + '/category_for_file/' + file_id, options )
              .map( ( res: Response ) => res );
   }
 
