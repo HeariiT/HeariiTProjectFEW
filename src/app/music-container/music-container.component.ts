@@ -479,4 +479,18 @@ export class MusicContainerComponent implements OnInit {
       )
   }
 
+  deleteSong( index ) {
+    var song_id = this.musicSources[ index ].id
+    this.songService.deleteSong( song_id ).subscribe(
+      () => {
+        if ( this.currentIndex == index ) {
+          this.nextSong( )
+          this.currentIndex--
+        }
+        this.musicSources = this.musicSources.slice( 0, index )
+          .concat( this.musicSources.slice( index + 1, this.musicSources.length ) )
+      }
+    )
+  }
+
 }

@@ -37,4 +37,15 @@ export class SongManagementService {
              .map( ( res: Response ) => res );
   }
 
+  deleteSong( song_id ) {
+    const headers = new Headers( this.headers );
+    var op = {
+        responseType: ResponseContentType.Blob,
+        headers: new Headers( this.headers )
+    }
+
+    return this.http.delete( this.backPath + '/songs/' + song_id , op )
+             .map( ( res: Response ) => res );
+  }
+
 }

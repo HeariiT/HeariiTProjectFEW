@@ -36,8 +36,9 @@
               src="./assets/bars.gif" width="20" style="margin-right: 5px;">
             <img *ngIf="currentIndex==i&&songRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
             <img *ngIf="downloadIndex==i&&downloadRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
-            <mat-icon class="icon white-font" (click)="download(i)">file_download</mat-icon>
+            <mat-icon class="icon0 white-font" (click)="download(i)">file_download</mat-icon>
             <mat-icon class="icon white-font" (click)="openNewMatch(i)">add_circle_outline</mat-icon>
+            <mat-icon class="icon2 white-font" (click)="deleteSong(i)">clear</mat-icon>
           </div>
         </div>
       </div>
