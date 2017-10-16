@@ -33,4 +33,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 `npm install --save @angular/animations`  
 `npm install --save hammerjs`  
 `npm install file-saver --save`  
-`npm install @types/file-saver --save`
+`npm install @types/file-saver --save`  
