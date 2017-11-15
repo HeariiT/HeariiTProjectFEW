@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { GlobalDataService } from './global-data.service';
 
 @Injectable()
 export class UserService {
@@ -7,10 +8,12 @@ export class UserService {
   headers: any;
   userData: any;
 
-  backPath: string = 'http://192.168.99.101:4000';
+  backPath;
 
 
-  constructor(private http: Http) { }
+  constructor(private http: Http, private gbService: GlobalDataService) {
+    this.backPath = gbService.backPath
+   }
 
 
   postUser( formData ) {
