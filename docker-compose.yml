@@ -2,6 +2,7 @@ version: '2'
 services:
   heariit-wa:
     build: .
+    # image: djguzmanc/heariitprojectfew
     command: "ng serve --port 7000 --host=0.0.0.0 --disable-host-check"
     ports:
       - "7000:7000"

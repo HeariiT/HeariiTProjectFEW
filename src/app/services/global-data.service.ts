@@ -11,7 +11,7 @@ export class GlobalDataService {
   private headers = new Subject<any>( );
   headersObs$ = this.headers.asObservable( );
 
-  public backPath = 'http://192.168.99.101:4000'
+  public backPath = 'http://192.168.0.12:4040'
 
   constructor( private http: Http ) { }
 
